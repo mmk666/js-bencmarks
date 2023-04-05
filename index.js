@@ -8,7 +8,7 @@ const filterobj = {
   partner_name: 'Japan -Amazon',
 };
 
-const getCategoryValues = (type, benchMark) => {
+const getCategoryValues = (type, filterObj) => {
   const categories = {
     region: ['region_name'],
     subRegion: ['sub_region_name'],
@@ -19,7 +19,7 @@ const getCategoryValues = (type, benchMark) => {
   };
   return categories[type]?.map((item) => ({
     key: item,
-    value: benchMark[item],
+    value: filterObj[item],
   }));
 };
 
@@ -46,7 +46,12 @@ const getKpiValues = (kpi, currency) => {
   }
 };
 
-const getFilteredCategories = (data, [x, y] = []) => {
+const getFilteredCategories = (
+  data,
+  [x, y] = [],
+  includePartner = false,
+  filterObj = {}
+) => {
   if (y) {
     return data?.filter(
       (item) =>
@@ -94,8 +99,13 @@ const generateData = (
   const kpival = getKpiValues(kpi, currency);
   const filteredKPI = getFilteredKpi(data, kpival);
   const benchMark = getBenchmark(filteredKPI, filterObj);
-  const categoryValues = getCategoryValues(category, benchMark);
-  const filteredCategory = getFilteredCategories(filteredKPI, categoryValues);
+  const categoryValues = getCategoryValues(category, filterObj);
+  const filteredCategory = getFilteredCategories(
+    filteredKPI,
+    categoryValues,
+    includePartner,
+    filterObj
+  );
   console.log(filteredCategory);
 };
 
