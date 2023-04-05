@@ -8,13 +8,19 @@ const filterobj = {
   partner_name: 'Japan -Amazon',
 };
 
-const categories = {
-  region: ['region_name'],
-  subRegion: ['sub_region_name'],
-  country: ['country_name'],
-  regionRtm: ['region_name', 'rtm_val'],
-  subRegionRtm: ['region_name', 'rtm_val'],
-  countryRtm: ['country_name', 'rtm_val'],
+const getCategoryValues = (type, benchMark) => {
+  const categories = {
+    region: ['region_name'],
+    subRegion: ['sub_region_name'],
+    country: ['country_name'],
+    regionRtm: ['region_name', 'rtm_val'],
+    subRegionRtm: ['region_name', 'rtm_val'],
+    countryRtm: ['country_name', 'rtm_val'],
+  };
+  return categories[type]?.map((item) => ({
+    key: item,
+    value: benchMark[item],
+  }));
 };
 
 const mapWithKey = (arr) => {
@@ -60,6 +66,13 @@ const getFilteredKpi = (data, [x, y] = []) => {
   return data?.filter((item) => item[x?.key] === x?.value);
 };
 
+const getBenchmark = (data = [], filterobj = {}) => {
+  const arr = data?.filter((item) =>
+    Object.keys(filterobj).every((key) => item[key] === filterobj[key])
+  );
+  return arr?.length > 0 ? arr[0] : {};
+};
+
 /**
  * Returns an Object
  * @param {Array} [data]
@@ -78,10 +91,12 @@ const generateData = (
   filterObj,
   category
 ) => {
-  const kpival = getKpiValues(kpi);
+  const kpival = getKpiValues(kpi, currency);
   const filteredKPI = getFilteredKpi(data, kpival);
-  const filteredCategory = getFilteredCategories(filteredKPI, category);
-  console.log(filteredKPI);
+  const benchMark = getBenchmark(filteredKPI, filterObj);
+  const categoryValues = getCategoryValues(category, benchMark);
+  const filteredCategory = getFilteredCategories(filteredKPI, categoryValues);
+  console.log(filteredCategory);
 };
 
 console.log(
