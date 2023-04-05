@@ -1,7 +1,7 @@
 import mock from './mock.json';
 
 const filterobj = {
-  region_name: 'Japan',
+  region_name: 'US',
   sub_region_name: 'Japan',
   country_name: 'Japan',
   rtm_val: 'Consumer - Channel',
@@ -122,5 +122,5 @@ const generateData = (
 };
 
 console.log(
-  generateData(mock, 'ST Rptd $ Growth', true, '', filterobj, 'regionRtm')
+  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'regionRtm')
 );
