@@ -8,19 +8,37 @@ const filterobj = {
   partner_name: 'Japan -Amazon',
 };
 
-const getCategoryValues = (type, filterObj) => {
-  const categories = {
-    region: ['region_name'],
-    subRegion: ['sub_region_name'],
-    country: ['country_name'],
-    regionRtm: ['region_name', 'rtm_val'],
-    subRegionRtm: ['region_name', 'rtm_val'],
-    countryRtm: ['country_name', 'rtm_val'],
-  };
-  return categories[type]?.map((item) => ({
-    key: item,
-    value: filterObj[item],
-  }));
+/**
+ * Filters an array of objects using custom predicates.
+ *
+ * @param  {Array}  array: the array to filter
+ * @param  {Object} filters: an object with the filter criteria
+ * @return {Array}
+ */
+const filterArray = (array, filters) => {
+  return array?.filter((item) =>
+    Object.keys(filters).every((key) => item[key] === filters[key])
+  );
+};
+
+const getCategoryValues = (
+  type,
+  { region_name, sub_region_name, country_name, rtm_val }
+) => {
+  switch (type) {
+    case 'region':
+      return { region_name };
+    case 'subRegion':
+      return { sub_region_name };
+    case 'country':
+      return { country_name };
+    case 'regionRtm':
+      return { region_name, rtm_val };
+    case 'subRegionRtm':
+      return { sub_region_name };
+    case 'countryRtm':
+      return { country_name };
+  }
 };
 
 const mapWithKey = (arr) => {
@@ -47,19 +65,20 @@ const getKpiValues = (kpi, currency) => {
 };
 
 const getFilteredCategories = (
-  data,
-  [x, y] = [],
+  data = [],
+  categoryValues = {},
   includePartner = false,
-  filterObj = {}
+  filterobj = {}
 ) => {
-  if (y) {
-    return data?.filter(
-      (item) =>
-        (x ? item[x?.key] === x?.value : true) &&
-        (y ? item[y?.key] === y?.value : true)
+  const arr = filterArray(data, categoryValues);
+
+  if (!includePartner) {
+    return arr?.filter((item) =>
+      Object.keys(filterobj).every((key) => item[key] !== filterobj[key])
     );
   }
-  return data?.filter((item) => (x ? item[x?.key] === x?.value : true));
+
+  return arr;
 };
 
 const getFilteredKpi = (data, [x, y] = []) => {
@@ -69,13 +88,6 @@ const getFilteredKpi = (data, [x, y] = []) => {
     );
   }
   return data?.filter((item) => item[x?.key] === x?.value);
-};
-
-const getBenchmark = (data = [], filterobj = {}) => {
-  const arr = data?.filter((item) =>
-    Object.keys(filterobj).every((key) => item[key] === filterobj[key])
-  );
-  return arr?.length > 0 ? arr[0] : {};
 };
 
 /**
@@ -98,7 +110,7 @@ const generateData = (
 ) => {
   const kpival = getKpiValues(kpi, currency);
   const filteredKPI = getFilteredKpi(data, kpival);
-  const benchMark = getBenchmark(filteredKPI, filterObj);
+  const benchMark = filterArray(filteredKPI, filterObj);
   const categoryValues = getCategoryValues(category, filterObj);
   const filteredCategory = getFilteredCategories(
     filteredKPI,
@@ -110,5 +122,5 @@ const generateData = (
 };
 
 console.log(
-  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'region')
+  generateData(mock, 'ST Rptd $ Growth', true, '', filterobj, 'regionRtm')
 );
