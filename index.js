@@ -217,7 +217,7 @@ const getFinalObj = (arr, kpi, benchMarkval, yearType, includePartner) => {
   const yoy_color = Math.round(yoy) > -1 ? 'green' : 'red';
   const formatter = '%';
   const partners = getPartnerCount(arr, includePartner);
-  const bar_color = 'green';
+  const bar_color = benchmark <= lower_range ? 'red' : 'green';
 
   return {
     kpi,
