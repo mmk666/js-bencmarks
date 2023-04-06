@@ -121,6 +121,20 @@ const getPercentageData = (arr, kpi) => {
   }));
 };
 
+const getMaxvalue = (array, key) => Math.max(...array.map((o) => o[key]));
+
+const getMinvalue = (array, key) => Math.min(...array.map((o) => o[key]));
+
+const getAvgvalue = (array, key) => arr.reduce((p, c) => p + c, 0) / arr.length;
+
+const getFinalObj = (array, kpi) => {
+  const percentageData = getPercentageData(array, kpi);
+  console.log(percentageData);
+  const min = getMinvalue(percentageData, 'value');
+  const max = getMaxvalue(percentageData, 'value');
+  console.log(min);
+};
+
 /**
  * Returns an Object
  * @param {Array} [data]
@@ -149,8 +163,8 @@ const generateData = (
     includePartner,
     filterObj
   );
-  const percentageData = getPercentageData(filteredCategory, kpi);
-  console.log(percentageData, benchMark);
+  const finalObj = getFinalObj(filteredCategory, kpi);
+  //console.log(filteredCategory, benchMark);
 };
 
 console.log(
