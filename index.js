@@ -93,13 +93,16 @@ const getFilteredKpi = (data, [x, y] = []) => {
 const getPercentageval = (item, kpi) => {
   const C_val = Math.round(item?.C_MEASURE_VAL);
   const P_val = Math.round(item?.P_MEASURE_VAL);
+
+  if (C_val === 0 || P_val === 0) {
+    return 0;
+  }
+
   switch (kpi) {
     case 'ST Rptd $ Growth':
-      return C_val === 0 || P_val === 0 ? 0 : Math.round((C_val / P_val) * 100);
+      return Math.round((C_val / P_val) * 100);
     case 'ST Rptd YoY Units':
-      return C_val === 0 || P_val === 0
-        ? 0
-        : Math.round((C_val / P_val - 1) * 100);
+      return Math.round((C_val / P_val - 1) * 100);
     case 'Quotes':
       return '';
     case 'AC Attach':
@@ -124,31 +127,67 @@ const getPercentageData = (arr, kpi) => {
 const getWOW = (kpi, benchMarkval) => {
   const C_val = Math.round(benchMarkval[0]?.C_MEASURE_VAL ?? 0);
   const P_val = Math.round(benchMarkval[0]?.P_MEASURE_VAL ?? 0);
+  const PY_val = Math.round(benchMarkval[0]?.PY_MEASURE_VAL ?? 0);
 
   if (C_val === 0) {
     return '-100%';
   }
-  if (P_val === 0) {
+  if (P_val === 0 || PY_val === 0) {
     return '-';
   }
 
   switch (kpi) {
     case 'ST Rptd $ Growth':
-      return C_val === 0 || P_val === 0 ? 0 : Math.round((C_val / P_val) * 100);
+      return Math.round((P_val / PY_val) * 100);
     case 'ST Rptd YoY Units':
-      return C_val === 0 || P_val === 0
-        ? 0
-        : Math.round((C_val / P_val - 1) * 100);
+      return Math.round((P_val / PY_val - 1) * 100);
     case 'Quotes':
       return '';
     case 'AC Attach':
       return '';
     case 'POP':
-      return C_val;
+      return Math.round((C_val / P_val - 1) * 100);
     case 'Attach Access':
       return '';
     case 'ASP':
-      return C_val;
+      return Math.round((C_val / P_val - 1) * 100);
+  }
+};
+
+const getYOY = (kpi, benchMarkval, yearType) => {
+  const C_val = Math.round(benchMarkval[0]?.C_MEASURE_VAL ?? 0);
+  const P_val = Math.round(benchMarkval[0]?.P_MEASURE_VAL ?? 0);
+  const PY_val = Math.round(benchMarkval[0]?.PY_MEASURE_VAL ?? 0);
+  const PPY_val = Math.round(benchMarkval[0]?.PPY_MEASURE_VAL ?? 0);
+  const PPPY_val = Math.round(benchMarkval[0]?.PPPY_MEASURE_VAL ?? 0);
+
+  const X_val =
+    yearType === 'YOY-3' ? PPY_val : yearType === 'YOY-2' ? PPY_val : PY_val;
+  const Y_val =
+    yearType === 'YOY-3' ? PPPY_val : yearType === 'YOY-2' ? PPPY_val : PPY_val;
+
+  if (X_val === 0 || C_val === 0) {
+    return '-100%';
+  }
+  if (Y_val === 0 || P_val === 0) {
+    return '-';
+  }
+
+  switch (kpi) {
+    case 'ST Rptd $ Growth':
+      return Math.round((X_val / Y_val) * 100);
+    case 'ST Rptd YoY Units':
+      return Math.round((X_val / Y_val - 1) * 100);
+    case 'Quotes':
+      return '';
+    case 'AC Attach':
+      return '';
+    case 'POP':
+      return Math.round((C_val / P_val - 1) * 100);
+    case 'Attach Access':
+      return '';
+    case 'ASP':
+      return Math.round((C_val / P_val - 1) * 100);
   }
 };
 
@@ -167,22 +206,28 @@ const getFinalObj = (arr, kpi, benchMarkval, yearType) => {
   const average = getAvgvalue(percentageData, 'value');
   const benchmark = benchMarkval[0]?.C_MEASURE_VAL ?? 0;
   const qoq = getWOW(kpi, benchMarkval);
-  /*
-  {
-    'kpi': 'Quotes - Goals Achieved',
-    'value': '80.1',
-    'benchmark': '95.1',
-    'lower_range': '82.1',
-    'upper_range': '98.2',
-    'yoy_color':'red',
-    'qoq_color' : 'red',
-    'yoy' : '-0.2',
-    'qoq':'-5.2',
-    'formatter' : '%',
-    'bar_color': 'red',
-    'partners': '4/5'
-  }
-   */
+  const qoq_color = Math.round(qoq) > -1 ? 'green' : 'red';
+  const yoy = getYOY(kpi, benchMarkval, yearType);
+  const yoy_color = Math.round(yoy) > -1 ? 'green' : 'red';
+  const formatter = '%';
+  const partners = '';
+  const bar_color = 'green';
+
+  return {
+    kpi,
+    value: benchmark,
+    benchmark,
+    lower_range,
+    upper_range,
+    average,
+    qoq,
+    qoq_color,
+    yoy,
+    yoy_color,
+    formatter,
+    partners,
+    bar_color,
+  };
 };
 
 /**
