@@ -51,13 +51,13 @@ const getKpiValues = (kpi, currency) => {
       return mapWithKey(currency === '$' ? ['ST_USD_AMT'] : ['ST_LOC_AMT']);
     case 'ST Rptd YoY Units':
       return mapWithKey(['ST_RPTD_QTY']);
-    case 'Quotes':
+    case 'Quotes - Goal Acheived':
       return mapWithKey([]);
-    case 'AC Attach':
+    case 'Apple Care Attach':
       return mapWithKey([]);
-    case 'POP':
+    case 'Premium Online Placement':
       return mapWithKey(['SOV_POP_SCORE_VA']);
-    case 'Attach Access':
+    case 'Attach Accessories':
       return mapWithKey([]);
     case 'ASP':
       return mapWithKey(['ST_USD_AMT', 'ST_RPTD_QTY']);
@@ -103,13 +103,13 @@ const getPercentageval = (item, kpi) => {
       return Math.round((C_val / P_val) * 100);
     case 'ST Rptd YoY Units':
       return Math.round((C_val / P_val - 1) * 100);
-    case 'Quotes':
+    case 'Quotes - Goal Acheived':
       return '';
-    case 'AC Attach':
+    case 'Apple Care Attach':
       return '';
-    case 'POP':
+    case 'Premium Online Placement':
       return C_val;
-    case 'Attach Access':
+    case 'Attach Accessories':
       return '';
     case 'ASP':
       return C_val;
@@ -141,13 +141,13 @@ const getWOW = (kpi, benchMarkval) => {
       return Math.round((P_val / PY_val) * 100);
     case 'ST Rptd YoY Units':
       return Math.round((P_val / PY_val - 1) * 100);
-    case 'Quotes':
+    case 'Quotes - Goal Acheived':
       return '';
-    case 'AC Attach':
+    case 'Apple Care Attach':
       return '';
-    case 'POP':
+    case 'Premium Online Placement':
       return Math.round((C_val / P_val - 1) * 100);
-    case 'Attach Access':
+    case 'Attach Accessories':
       return '';
     case 'ASP':
       return Math.round((C_val / P_val - 1) * 100);
@@ -178,13 +178,13 @@ const getYOY = (kpi, benchMarkval, yearType) => {
       return Math.round((X_val / Y_val) * 100);
     case 'ST Rptd YoY Units':
       return Math.round((X_val / Y_val - 1) * 100);
-    case 'Quotes':
+    case 'Quotes - Goal Acheived':
       return '';
-    case 'AC Attach':
+    case 'Apple Care Attach':
       return '';
-    case 'POP':
+    case 'Premium Online Placement':
       return Math.round((C_val / P_val - 1) * 100);
-    case 'Attach Access':
+    case 'Attach Accessories':
       return '';
     case 'ASP':
       return Math.round((C_val / P_val - 1) * 100);
@@ -311,10 +311,10 @@ const getKpiData = (
 const arr = [
   'ST Rptd $ Growth',
   'ST Rptd YoY Units',
-  'Quotes',
-  'AC Attach',
-  'POP',
-  'Attach Access',
+  'Quotes - Goal Acheived',
+  'Apple Care Attach',
+  'Premium Online Placement',
+  'Attach Accessories',
   'ASP',
 ];
 console.log(getKpiData(mock, arr, false, '', filterobj, 'region', 'YoY'));
