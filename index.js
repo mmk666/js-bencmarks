@@ -47,7 +47,7 @@ const mapWithKey = (arr) => {
 
 const getKpiValues = (kpi, currency) => {
   switch (kpi) {
-    case 'ST Rptd $ Growth':
+    case 'ST Rptd $ Growth Rate':
       return mapWithKey(currency === '$' ? ['ST_USD_AMT'] : ['ST_LOC_AMT']);
     case 'ST Rptd YoY Units':
       return mapWithKey(['ST_RPTD_QTY']);
@@ -99,7 +99,7 @@ const getPercentageval = (item, kpi) => {
   }
 
   switch (kpi) {
-    case 'ST Rptd $ Growth':
+    case 'ST Rptd $ Growth Rate':
       return Math.round((C_val / P_val) * 100);
     case 'ST Rptd YoY Units':
       return Math.round((C_val / P_val - 1) * 100);
@@ -137,7 +137,7 @@ const getWOW = (kpi, benchMarkval) => {
   }
 
   switch (kpi) {
-    case 'ST Rptd $ Growth':
+    case 'ST Rptd $ Growth Rate':
       return Math.round((P_val / PY_val) * 100);
     case 'ST Rptd YoY Units':
       return Math.round((P_val / PY_val - 1) * 100);
@@ -174,7 +174,7 @@ const getYOY = (kpi, benchMarkval, yearType) => {
   }
 
   switch (kpi) {
-    case 'ST Rptd $ Growth':
+    case 'ST Rptd $ Growth Rate':
       return Math.round((X_val / Y_val) * 100);
     case 'ST Rptd YoY Units':
       return Math.round((X_val / Y_val - 1) * 100);
@@ -309,7 +309,7 @@ const getKpiData = (
   );
 };
 const arr = [
-  'ST Rptd $ Growth',
+  'ST Rptd $ Growth Rate',
   'ST Rptd YoY Units',
   'Quotes - Goal Acheived',
   'Apple Care Attach',
