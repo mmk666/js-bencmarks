@@ -2,10 +2,10 @@ import mock from './mock.json';
 
 const filterobj = {
   region_name: 'US',
-  sub_region_name: 'Japan',
-  country_name: 'Japan',
-  rtm_val: 'Consumer - Channel',
-  partner_name: 'Japan -Amazon',
+  sub_region_name: 'US',
+  country_name: 'USA',
+  rtm_val: 'Telco - Channel',
+  partner_name: 'USA -AT&T',
 };
 
 /**
@@ -74,7 +74,7 @@ const getFilteredCategories = (
 
   if (!includePartner) {
     return arr?.filter((item) =>
-      Object.keys(filterobj).every((key) => item[key] !== filterobj[key])
+      Object.keys(filterobj).some((key) => item[key] !== filterobj[key])
     );
   }
 
@@ -118,9 +118,9 @@ const generateData = (
     includePartner,
     filterObj
   );
-  console.log(filteredCategory);
+  console.log(filteredCategory, benchMark);
 };
 
 console.log(
-  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'regionRtm')
+  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'region')
 );
