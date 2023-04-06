@@ -93,8 +93,6 @@ const getFilteredKpi = (data, [x, y] = []) => {
 const getPercentageval = (item, kpi) => {
   const C_val = Math.round(item?.C_MEASURE_VAL);
   const P_val = Math.round(item?.P_MEASURE_VAL);
-
-  console.log(C_val, P_val);
   switch (kpi) {
     case 'ST Rptd $ Growth':
       return C_val === 0 || P_val === 0 ? 0 : Math.round((C_val / P_val) * 100);
