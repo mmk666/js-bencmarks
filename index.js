@@ -90,6 +90,39 @@ const getFilteredKpi = (data, [x, y] = []) => {
   return data?.filter((item) => item[x?.key] === x?.value);
 };
 
+const getPercentageval = (item, kpi) => {
+  const C_val = Math.round(item?.C_MEASURE_VAL);
+  const P_val = Math.round(item?.P_MEASURE_VAL);
+
+  console.log(C_val, P_val);
+  switch (kpi) {
+    case 'ST Rptd $ Growth':
+      return C_val === 0 || P_val === 0 ? 0 : Math.round((C_val / P_val) * 100);
+    case 'ST Rptd YoY Units':
+      return C_val === 0 || P_val === 0
+        ? 0
+        : Math.round((C_val / P_val - 1) * 100);
+    case 'Quotes':
+      return '';
+    case 'AC Attach':
+      return '';
+    case 'POP':
+      return C_val;
+    case 'Attach Access':
+      return '';
+    case 'ASP':
+      return C_val;
+  }
+};
+
+const getPercentageData = (arr, kpi) => {
+  return arr?.map((item) => ({
+    ...item,
+    kpi,
+    value: getPercentageval(item, kpi),
+  }));
+};
+
 /**
  * Returns an Object
  * @param {Array} [data]
@@ -118,7 +151,8 @@ const generateData = (
     includePartner,
     filterObj
   );
-  console.log(filteredCategory, benchMark);
+  const percentageData = getPercentageData(filteredCategory, kpi);
+  console.log(percentageData, benchMark);
 };
 
 console.log(
