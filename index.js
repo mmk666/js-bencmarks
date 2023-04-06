@@ -198,9 +198,15 @@ const getMinvalue = (arr, key) => Math.min(...arr.map((o) => o[key]));
 const getAvgvalue = (arr, key) =>
   arr.reduce((p, c) => p + c[key], 0) / arr.length;
 
-const getFinalObj = (arr, kpi, benchMarkval, yearType) => {
+const getPartnerCount = (arr, includePartner) => {
+  const list = [...new Set(arr.map((item) => item?.partner_name))];
+  return list.length === 0
+    ? '0/0'
+    : `${includePartner ? list.length : list.length - 1}/${list.length}`;
+};
+
+const getFinalObj = (arr, kpi, benchMarkval, yearType, includePartner) => {
   const percentageData = getPercentageData(arr, kpi);
-  console.log(percentageData);
   const lower_range = getMinvalue(percentageData, 'value');
   const upper_range = getMaxvalue(percentageData, 'value');
   const average = getAvgvalue(percentageData, 'value');
@@ -210,7 +216,7 @@ const getFinalObj = (arr, kpi, benchMarkval, yearType) => {
   const yoy = getYOY(kpi, benchMarkval, yearType);
   const yoy_color = Math.round(yoy) > -1 ? 'green' : 'red';
   const formatter = '%';
-  const partners = '';
+  const partners = getPartnerCount(arr, includePartner);
   const bar_color = 'green';
 
   return {
@@ -260,10 +266,45 @@ const generateData = (
     includePartner,
     filterObj
   );
-  const finalObj = getFinalObj(filteredCategory, kpi, benchMark, yearType);
-  //console.log(filteredCategory, benchMark);
+  const finalObj = getFinalObj(
+    filteredCategory,
+    kpi,
+    benchMark,
+    yearType,
+    includePartner
+  );
+  return finalObj;
 };
 
-console.log(
-  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'region', 'YoY')
-);
+const getKpiData = (
+  data,
+  includePartner,
+  currency,
+  filterObj,
+  category,
+  yearType
+) => {
+  const arr = [
+    'ST Rptd $ Growth',
+    'ST Rptd YoY Units',
+    'Quotes',
+    'AC Attach',
+    'POP',
+    'Attach Access',
+    'ASP',
+  ];
+
+  return arr.map((item) =>
+    generateData(
+      data,
+      item,
+      includePartner,
+      currency,
+      filterObj,
+      category,
+      yearType
+    )
+  );
+};
+
+console.log(getKpiData(mock, false, '', filterobj, 'region', 'YoY'));
