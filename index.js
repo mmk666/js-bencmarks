@@ -276,25 +276,27 @@ const generateData = (
   return finalObj;
 };
 
+/**
+ * Returns an Array of Objects
+ * @param {Array} [data]
+ * @param {Array} [kpi]
+ * @param {boolean} [includePartner]
+ * @param {string} [currency]
+ * @param {obj} [filterObj]
+ * @param {string} [category]
+ * @param {string} [yearType]
+ */
+
 const getKpiData = (
-  data,
+  data = [],
+  kpi = [],
   includePartner,
   currency,
   filterObj,
   category,
   yearType
 ) => {
-  const arr = [
-    'ST Rptd $ Growth',
-    'ST Rptd YoY Units',
-    'Quotes',
-    'AC Attach',
-    'POP',
-    'Attach Access',
-    'ASP',
-  ];
-
-  return arr.map((item) =>
+  return kpi?.map((item) =>
     generateData(
       data,
       item,
@@ -306,5 +308,13 @@ const getKpiData = (
     )
   );
 };
-
-console.log(getKpiData(mock, false, '', filterobj, 'region', 'YoY'));
+const arr = [
+  'ST Rptd $ Growth',
+  'ST Rptd YoY Units',
+  'Quotes',
+  'AC Attach',
+  'POP',
+  'Attach Access',
+  'ASP',
+];
+console.log(getKpiData(mock, arr, false, '', filterobj, 'region', 'YoY'));
