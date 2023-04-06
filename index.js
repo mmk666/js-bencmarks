@@ -121,18 +121,68 @@ const getPercentageData = (arr, kpi) => {
   }));
 };
 
-const getMaxvalue = (array, key) => Math.max(...array.map((o) => o[key]));
+const getWOW = (kpi, benchMarkval) => {
+  const C_val = Math.round(benchMarkval[0]?.C_MEASURE_VAL ?? 0);
+  const P_val = Math.round(benchMarkval[0]?.P_MEASURE_VAL ?? 0);
 
-const getMinvalue = (array, key) => Math.min(...array.map((o) => o[key]));
+  if (C_val === 0) {
+    return '-100%';
+  }
+  if (P_val === 0) {
+    return '-';
+  }
 
-const getAvgvalue = (array, key) => arr.reduce((p, c) => p + c, 0) / arr.length;
+  switch (kpi) {
+    case 'ST Rptd $ Growth':
+      return C_val === 0 || P_val === 0 ? 0 : Math.round((C_val / P_val) * 100);
+    case 'ST Rptd YoY Units':
+      return C_val === 0 || P_val === 0
+        ? 0
+        : Math.round((C_val / P_val - 1) * 100);
+    case 'Quotes':
+      return '';
+    case 'AC Attach':
+      return '';
+    case 'POP':
+      return C_val;
+    case 'Attach Access':
+      return '';
+    case 'ASP':
+      return C_val;
+  }
+};
 
-const getFinalObj = (array, kpi) => {
-  const percentageData = getPercentageData(array, kpi);
+const getMaxvalue = (arr, key) => Math.max(...arr.map((o) => o[key]));
+
+const getMinvalue = (arr, key) => Math.min(...arr.map((o) => o[key]));
+
+const getAvgvalue = (arr, key) =>
+  arr.reduce((p, c) => p + c[key], 0) / arr.length;
+
+const getFinalObj = (arr, kpi, benchMarkval, yearType) => {
+  const percentageData = getPercentageData(arr, kpi);
   console.log(percentageData);
-  const min = getMinvalue(percentageData, 'value');
-  const max = getMaxvalue(percentageData, 'value');
-  console.log(min);
+  const lower_range = getMinvalue(percentageData, 'value');
+  const upper_range = getMaxvalue(percentageData, 'value');
+  const average = getAvgvalue(percentageData, 'value');
+  const benchmark = benchMarkval[0]?.C_MEASURE_VAL ?? 0;
+  const qoq = getWOW(kpi, benchMarkval);
+  /*
+  {
+    'kpi': 'Quotes - Goals Achieved',
+    'value': '80.1',
+    'benchmark': '95.1',
+    'lower_range': '82.1',
+    'upper_range': '98.2',
+    'yoy_color':'red',
+    'qoq_color' : 'red',
+    'yoy' : '-0.2',
+    'qoq':'-5.2',
+    'formatter' : '%',
+    'bar_color': 'red',
+    'partners': '4/5'
+  }
+   */
 };
 
 /**
@@ -143,6 +193,7 @@ const getFinalObj = (array, kpi) => {
  * @param {string} [currency]
  * @param {obj} [filterObj]
  * @param {string} [category]
+ * @param {string} [yearType]
  */
 
 const generateData = (
@@ -151,7 +202,8 @@ const generateData = (
   includePartner,
   currency,
   filterObj,
-  category
+  category,
+  yearType
 ) => {
   const kpival = getKpiValues(kpi, currency);
   const filteredKPI = getFilteredKpi(data, kpival);
@@ -163,10 +215,10 @@ const generateData = (
     includePartner,
     filterObj
   );
-  const finalObj = getFinalObj(filteredCategory, kpi);
+  const finalObj = getFinalObj(filteredCategory, kpi, benchMark, yearType);
   //console.log(filteredCategory, benchMark);
 };
 
 console.log(
-  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'region')
+  generateData(mock, 'ST Rptd YoY Units', true, '', filterobj, 'region', 'YoY')
 );
